@@ -1,0 +1,42 @@
+{
+  "name": "awesomity-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "NODE_ENV=production npm run migrate && babel-node ./src/app.js",
+    "dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/app.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Blaiseniyo/Awesomity-Backend.git"
+  },
+  "author": "Blaise Niyonkuru",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Blaiseniyo/Awesomity-Backend/issues"
+  },
+  "homepage": "https://github.com/Blaiseniyo/Awesomity-Backend#readme",
+  "dependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/node": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@babel/register": "^7.15.3",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.7.0",
+    "sequelize-paginate": "^1.1.6",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
+  },
+  "devDependencies": {}
+}
