@@ -14,9 +14,9 @@ app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 
 //routes
-app.use("/api/v1",routes);
+app.use("/api/v1/",routes);
 
-//welcome page
+// welcome page
 app.use("/",(req,res)=>{
     res.status(200).json({message:"Welcome to Awesomity Challange By Blaise Niyonkuru"})
 })
@@ -30,8 +30,8 @@ app.all('*', (req, res, next) => {
   // Throw an error if anything wrong happens
   app.use((err, req, res, next) => {
     const statusCode = err.status || 500;
-    res.status(statusCode).json({ status: statusCode, error: err.message, stack: err.stack });
-    next(err);
+    res.status(statusCode).json({ status: statusCode, error: err.message});
+    // next(err);
   });
 
   //connecting to the DB

@@ -6,7 +6,13 @@
   "scripts": {
     "start": "NODE_ENV=production npm run migrate && babel-node ./src/app.js",
     "dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/app.js",
-    "test": "test"
+    "test": "test",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate-undo": " npx sequelize-cli db:migrate:undo",
+    "migrate-undo-all": "npx sequelize-cli db:migrate:undo:all",
+    "seed": "npx sequelize-cli db:seed:all",
+    "seed-undo": "npx sequelize-cli db:seed:undo",
+    "seed-undo-all": "npx sequelize-cli db:seed:undo:all"
   },
   "repository": {
     "type": "git",
@@ -24,6 +30,7 @@
     "@babel/node": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
     "@babel/register": "^7.15.3",
+    "@sendgrid/mail": "^7.4.7",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
