@@ -13,12 +13,11 @@ export const createEmployee = async (req, res) => {
     const useInfo={
       email:employee.email,
       subject:"Added to a Company Employee list",
-      body:`<h1>Awesemity Email</h1> </br><p>Hi ${employee.name} </br> You have added to the list of employee of Awesomity..</p>`
+      body:`<h3>Awesemity Email</h3> </br><p>Hi ${employee.name} </br> You have added to the list of employee of Awesomity..</p>`
     }
     const email = await sendEmail(useInfo)
-    res.status(201).json({ employee,email });
+    res.status(201).json({ employee,messsage:"Email was sent to the employees email" });
   } catch (error) {
-   // next(error);
     res.status(500).json({ messsage:error });
   }
 };
@@ -31,7 +30,6 @@ export const getEmployees = async (req, res, next) => {
     }
     res.status(200).json({ status: 200, employees });
   } catch (error) {
-    //next(error);
     res.status(500).json({ messsage:error });
   }
 };
@@ -45,7 +43,6 @@ export const getEmployee = async (req, res, next) => {
     }
     res.status(200).json({employee });
   } catch (error) {
-    // next(error);
     console.log(error)
     res.status(500).json({ messsage:error });
   }
@@ -60,7 +57,6 @@ export const activateEmployee =  async (req,res)=>{
     await Employee.update( {status:"ACTIVE"},{ where: { code: req.params.id } });
     res.status(201).json({ status: 201, message: 'Employee has been Activated' });
   } catch (error) {
-    // next(error);
     res.status(500).json({ messsage:error.message });
   }
 }
@@ -74,7 +70,6 @@ export const suspendEmployee =  async (req,res)=>{
     await Employee.update( {status:"INACTIVE"},{ where: { code: req.params.id } });
     res.status(201).json({ status: 201, message: 'Employee has been Suspended' });
   } catch (error) {
-    // next(error);
     res.status(500).json({ messsage:error.message });
   }
 }
@@ -87,7 +82,6 @@ export const updateEmployee = async (req, res, next) => {
     const update = await Employee.update(req.body, { where: { code: req.params.id } });
     res.status(201).json({ status: 201, message: 'Accommodation successfully updated' });
   } catch (error) {
-    // next(error);
     res.status(500).json({ messsage:error });
   }
 };
@@ -101,7 +95,6 @@ export const deleteEmployee = async (req, res, next) => {
     await Employee.destroy({ where: { code: req.params.id } });
     res.status(201).json({ status: 201, message: 'Employee has been Deleted' });
   } catch (error) {
-    // next(error);
     res.status(500).json({ messsage:error.message });
   }
 };

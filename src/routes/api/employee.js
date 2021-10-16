@@ -9,13 +9,18 @@ import {
     activateEmployee
 } from "../../controller/employeeController"
 
+import {
+    employeeValidation,
+    updateEmployeeValidation
+} from "../../middlewares/validations/employeeValidator"
+
 const router = express.Router();
 
-router.post('/', createEmployee);
+router.post('/',employeeValidation,createEmployee);
 router.get('/', getEmployees);
 router.get('/:id', getEmployee);
 router.delete('/:id', deleteEmployee);
-router.patch('/:id', updateEmployee);
+router.patch('/:id',updateEmployeeValidation,updateEmployee);
 router.post('/suspend/:id', suspendEmployee);
 router.post('/activate/:id', activateEmployee);
 

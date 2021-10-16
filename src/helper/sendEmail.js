@@ -3,7 +3,6 @@ import 'dotenv/config';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 const sendEmail = async (userInfo) =>{
-    console.log(userInfo.email)
     const mailOptions = {
       from:{name:"Awesomity",email:process.env.SENDGRID_SENDER_EMAIL},
       to: userInfo.email,

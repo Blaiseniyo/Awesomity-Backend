@@ -42,6 +42,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
+        defaultValue:"INACTIVE",
         validate: {
           isIn: [['ACTIVE', 'INACTIVE']],
         }
