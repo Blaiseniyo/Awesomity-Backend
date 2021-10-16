@@ -4,12 +4,14 @@ import db from "./models/index";
 import routes from "./routes/index";
 import ApplicationError from "./utls/Errors/applicationError"
 import "dotenv/config";
+import cookieParser from "cookie-parser";
 
 
 const app = express();
 const PORT = process.env.PORT || 5000
 
 app.use(cors())
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 

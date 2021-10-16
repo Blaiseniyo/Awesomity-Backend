@@ -1,12 +1,16 @@
 import {Employee} from "../models"
 import 'express-async-errors';
-import employeeNotFound from '../utls/Errors/NotfoundError';
-import signUpError from '../utls/Errors/badRequestError';
+import notFoundError from '../utls/Errors/NotfoundError';
+import badRequestError from '../utls/Errors/badRequestError';
 import ApplicationError from "../utls/Errors/applicationError";
-import {hashPassword,generateToken,verifyToken} from "../utls/auth"
+import AuthorizationError from "../utls/Errors/authorizationError"
 import {
-  getSingleEmployee,
-  getAllEmployees,
+    hashPassword,
+    generateToken,
+    verifyToken,
+    comparePassword
+}from "../utls/auth"
+import {
   getManager,
   getEmployeeByEmail
 } from '../services/employeeServices';
@@ -16,8 +20,7 @@ export const signUpManager = async (req, res) => {
   try {
     const managerExist = await getManager(req.body);
     if(managerExist.exist){
-      // return res.status(400).json({message:managerExist.message})
-       throw new signUpError((managerExist.message))
+       throw new badRequestError((managerExist.message))
     }
     const password = hashPassword(req.body.password);
     const employee = await Employee.create({...req.body,password});
@@ -30,7 +33,6 @@ export const signUpManager = async (req, res) => {
     const email = await sendEmail(useInfo)
     res.status(201).json({ employee,messsage:"An email confirmation email was sent to the your email, Please go and confirm your email" });
   } catch (error) {
-      console.log(error)
     res.status(500).json({ messsage:error.message });
   }
 };
@@ -40,100 +42,130 @@ export const verification = async (req, res, next) => {
       try {
         const record = await getEmployeeByEmail(email);
         if (!record) {
-          throw new employeeNotFound(('Account does not exist'));
+          throw new notFoundError(('Account does not exist'));
         }
         if (record.status === "INACTIVE") {
             await Employee.update( {status:"ACTIVE"},{ where: { email } });
           return res.status(200).json({ status: 200, message: ('Email has been verified') });
         } 
-        throw new signUpError(('Account already verified'));
+        res.status(400).json({ status: 400, message: ('Account already verified') });
       } catch (error) {
-        //next(error);
         throw new ApplicationError()
       }
     };
     const decoded = await verifyToken(req.query.token)
-    // jwt.verify(req.query.token, process.env.TOKEN_SECRET, (err, user) => {
-    //   if (err) throw new badRequest(('Invalid token'));
-    //   updateUser(user.username);
-    // });
     updateUser(decoded.email);
   };
 
-export const getEmployees = async (req, res, next) => {
-  try {
-    const employees = await  getAllEmployees();
-    if (!employees) {
-      throw new employeeNotFound(('No Employees found'));
-    }
-    res.status(200).json({ status: 200, employees });
-  } catch (error) {
-    res.status(500).json({ messsage:error });
-  }
-};
+export const login = async (req,res,next)=>{
+    
+    const { email, password } = req.body;
+    const employee = await getEmployeeByEmail(email);
 
-export const getEmployee = async (req, res, next) => {
-  const { id } = req.params;
-  try {
-    const employee = await getSingleEmployee(id);
-    if (!employee) {
-      throw new employeeNotFound(('Employee does not exist'));
+    if (employee === null) {
+        throw new notFoundError((`You don't have an account with this email: ${email}`), 404);
     }
-    res.status(200).json({employee });
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ messsage:error });
-  }
-};
 
-export const activateEmployee =  async (req,res)=>{
-  try {
-    const employee = await Employee.findOne({where:{code:req.params.id}});
-    if (!employee) {
-      throw new employeeNotFound(('Employee does not exist'));
+    if (employee.status === "INACTIVE") {
+        throw new ApplicationError(('Please verify your email first'), 403);
     }
-    await Employee.update( {status:"ACTIVE"},{ where: { code: req.params.id } });
-    res.status(201).json({ status: 201, message: 'Employee has been Activated' });
-  } catch (error) {
-    res.status(500).json({ messsage:error.message });
-  }
+
+    if (employee.position !== "MANAGER") {
+        throw new badRequestError(('You are not Allowed to Login into the System'), 400);
+    }
+    
+    const result = comparePassword(password, employee.password);
+
+    if (!result) throw new badRequestError(('Incorrect credentials'), 400);
+
+    try {
+
+        const userToken = await generateToken({email:employee.email,status:employee.status,position:employee.position});
+
+        res.cookie('Login_Token', userToken,{
+            httpOnly: true, 
+            path: '/',
+            sameSite: "strict"
+        });
+
+        return res.status(200).json({
+            status: 200,
+            message: ('login successful'),
+            token: userToken
+        });
+    } catch (err) {
+
+        next(err);
+    }
 }
 
-export const suspendEmployee =  async (req,res)=>{
-  try {
-    const employee = await Employee.findOne({where:{code:req.params.id}});
-    if (!employee) {
-      throw new employeeNotFound(('Employee does not exist'));
+export const logout = async (req, res) => {
+    try {
+      
+      res.clearCookie('Login_Token', { path: '/' });
+  
+      res.status(200).json({ status: 200, message: ('Logout successful!') });
+
+    } catch (error) {
+
+        res.status(400).json(error.message);
     }
-    await Employee.update( {status:"INACTIVE"},{ where: { code: req.params.id } });
-    res.status(201).json({ status: 201, message: 'Employee has been Suspended' });
-  } catch (error) {
-    res.status(500).json({ messsage:error.message });
-  }
-}
-export const updateEmployee = async (req, res, next) => {
-  try {
-    const employee = await Employee.findOne({where:{code:req.params.id}});
-    if (!employee) {
-      throw new employeeNotFound(('Employee does not exist'));
-    }
-    const update = await Employee.update(req.body, { where: { code: req.params.id } });
-    res.status(201).json({ status: 201, message: 'Accommodation successfully updated' });
-  } catch (error) {
-    res.status(500).json({ messsage:error });
-  }
 };
 
-export const deleteEmployee = async (req, res, next) => {
-  try {
-    const employee = await Employee.findOne({where:{code:req.params.id}});
-    if (!employee) {
-      throw new employeeNotFound(('Employee does not exist'));
+
+export const sendResetPasswordEmail = async (req, res, next) => {
+
+    try {
+      const { email } = req.body;
+      const employee = await getEmployeeByEmail(email);
+      if (!employee) return res.status(404).json({ status: 404, error: 'User not found' });
+      if (employee.status!== "ACTIVE") return res.status(401).json({ status: 401, error: 'Account not Activated' });
+
+      const resetToken = generateToken({email:employee.email,status:employee.status,position:employee.position});
+  
+      const userInfo = {
+        email: email,
+        subject: 'Reset your password',
+        body: `<p>Hello, you requested to reset your password on Awesomity, Click on the link below to enter new password.</p> <br> <a href=${process.env.BACKEND_URL}/api/v1/auth/rest_password?token=${resetToken}><b>Reset password Link</b></a>`
+      };
+  
+      const sentEmail = await sendEmail(userInfo)
+  
+      if(sentEmail){
+        return res.status(200).json({ status: 200, message: 'Please check your email to reset your password' });
+  
+      }else{
+        throw new ApplicationError("Failed to send the reset email, please try again!", 500);
+      }
+  
+    } catch (error) {
+      next(error);
     }
-    await Employee.destroy({ where: { code: req.params.id } });
-    res.status(201).json({ status: 201, message: 'Employee has been Deleted' });
-  } catch (error) {
-    res.status(500).json({ messsage:error.message });
-  }
-};
+  };
+
+
+export const verifyResetPassword = async (req, res, next) => {
+    try {
+        const { token } = req.query;
+
+        const { password, confirmPassword } = req.body;
+    
+        const decodedToken = await verifyToken(token);
+
+        if (decodedToken.email === undefined) throw new AuthorizationError(('Invalid Token'));
+
+        if (password !== confirmPassword) throw new badRequestError(('Passwords do not match'));
+
+        const record = await getEmployeeByEmail(decodedToken.email);
+
+        if (!record) throw new notFoundError(('Account does not exist'));
+        const newPassword = hashPassword(password);
+        const updatePassword = await Employee.update( {password:newPassword},{ where: { email:decodedToken.email} });
+
+        return res.status(200).json({ status: 200, message: ('Password reset successfully') });
+      
+    } catch (err) { 
+        next(err)
+     }
+  };
 
