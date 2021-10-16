@@ -21,9 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false
     },
     name: DataTypes.STRING,
-    nationId: DataTypes.STRING,
+    nationalId: DataTypes.STRING,
     phoneNumber: DataTypes.STRING,
     email: DataTypes.STRING,
+    password: DataTypes.STRING,
     DOB: DataTypes.DATE,
     status: DataTypes.STRING,
     position: DataTypes.STRING

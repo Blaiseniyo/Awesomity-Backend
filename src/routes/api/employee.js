@@ -14,14 +14,21 @@ import {
     updateEmployeeValidation
 } from "../../middlewares/validations/employeeValidator"
 
+import checkLogin from "../../middlewares/auth/checkUser";
 const router = express.Router();
 
-router.post('/',employeeValidation,createEmployee);
-router.get('/', getEmployees);
-router.get('/:id', getEmployee);
-router.delete('/:id', deleteEmployee);
-router.patch('/:id',updateEmployeeValidation,updateEmployee);
-router.post('/suspend/:id', suspendEmployee);
-router.post('/activate/:id', activateEmployee);
+router.post('/',checkLogin, employeeValidation, createEmployee);
+
+router.get('/',checkLogin, getEmployees);
+
+router.get('/:id',checkLogin, getEmployee);
+
+router.delete('/:id',checkLogin, deleteEmployee);
+
+router.patch('/:id',checkLogin,updateEmployeeValidation,updateEmployee);
+
+router.post('/suspend/:id',checkLogin, suspendEmployee);
+
+router.post('/activate/:id',checkLogin, activateEmployee);
 
 export default router;

@@ -11,7 +11,7 @@ export const employeeValidation = (req, res, next) => {
       "string.empty": "name can't be empty",
       "string.base": "Name must be a string",
     }),
-    nationId: Joi.string().min(16).max(16).regex(nationIdRegex).required().messages({
+    nationalId: Joi.string().min(16).max(16).regex(nationIdRegex).required().messages({
       "string.base": "National Id must be string",
       "string.empty": "National Id id required",
       "string.min":"National Id must 16 character long",
@@ -41,11 +41,10 @@ export const employeeValidation = (req, res, next) => {
       "string.valid":
         "status must be a either [INACTIVE or ACTIVE]",
     }),
-    position: Joi.string().valid('MANAGER','DEVELOPER','DESIGNER','TESTER','DEVOPS').required().messages({
+    position: Joi.string().valid('DEVELOPER','DESIGNER','TESTER','DEVOPS').required().messages({
       "string.base": "status must be string",
       "string.empty": "Please fill in employee's position",
-      "string.valid":
-        "status must be a either [MANAGER or DEVELOPER or DESIGNER or TESTER or DEVOPS]",
+      "string.valid":"status must be a either [DEVELOPER or DESIGNER or TESTER or DEVOPS]",
     })
   });
   const { error } = schema.validate(req.body);
@@ -65,7 +64,7 @@ export const updateEmployeeValidation = (req, res, next) => {
       "string.empty": "name can't be empty",
       "string.base": "Name must be a string",
     }),
-    nationId: Joi.string().min(16).max(16).regex(nationIdRegex).messages({
+    nationalId: Joi.string().min(16).max(16).regex(nationIdRegex).messages({
       "string.base": "National Id must be string",
       "string.empty": "National Id id required",
       "string.min":"National Id must 16 character long",
@@ -95,11 +94,11 @@ export const updateEmployeeValidation = (req, res, next) => {
       "string.valid":
         "status must be a either [INACTIVE or ACTIVE]",
     }),
-    position: Joi.string().valid('MANAGER','DEVELOPER','DESIGNER','TESTER','DEVOPS').messages({
+    position: Joi.string().valid('DEVELOPER','DESIGNER','TESTER','DEVOPS').messages({
       "string.base": "status must be string",
       "string.empty": "Please fill in employee's position",
       "string.valid":
-        "status must be a either [MANAGER or DEVELOPER or DESIGNER or TESTER or DEVOPS]",
+        "status must be a either [DEVELOPER or DESIGNER or TESTER or DEVOPS]",
     })
   });
   const { error } = schema.validate(req.body);
