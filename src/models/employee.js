@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     position: DataTypes.STRING
   }, {
     sequelize,
+    schema: 'EMP',
     modelName: 'Employee',
   });
   return Employee;
