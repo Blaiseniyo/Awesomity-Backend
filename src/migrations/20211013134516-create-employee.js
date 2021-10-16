@@ -19,7 +19,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      nationId: {
+      nationalId: {
         type: Sequelize.STRING,
         allowNull: false,
         unique:true,
@@ -43,6 +43,7 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
         defaultValue:"INACTIVE",
+        allowNull:false,
         validate: {
           isIn: [['ACTIVE', 'INACTIVE']],
         }
@@ -50,9 +51,15 @@ module.exports = {
       },
       position: {
         type: Sequelize.STRING,
+        defaultValue:"MANAGER",
+        allowNull:false,
         validate: {
           isIn: [['MANAGER', 'DEVELOPER', 'DESIGNER', 'TESTER', 'DEVOPS']],
         }
+      },
+      password:{
+        type:Sequelize.STRING,
+        allowNull:true,
       },
       createdAt: {
         allowNull: false,
