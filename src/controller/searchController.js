@@ -6,7 +6,7 @@ const seachController = async (req,res,next)=>{
     try {
         const {search} = req.body;
         const result =  await Employee.findAll({where:{[Op.or] : [
-            // {code:search},
+            {code:search},
             {email:search},
             {phoneNumber:search},
             {position:search},

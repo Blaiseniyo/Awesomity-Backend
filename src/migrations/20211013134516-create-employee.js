@@ -2,18 +2,11 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Employees', {
-      // id: {
-      //   allowNull: false,
-      //   autoIncrement: true,
-      //   primaryKey: true,
-      //   type: Sequelize.INTEGER
-      // },
       code: {
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
-        type: Sequelize.INTEGER
-        //type: Sequelize.STRING
+        default: Sequelize.fn('uuid_generate_v4'),
+        type: Sequelize.UUID
       },
       name: {
         type: Sequelize.STRING,

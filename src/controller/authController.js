@@ -67,13 +67,13 @@ export const login = async (req,res,next)=>{
     }
 
     if (employee.status === "INACTIVE") {
-        throw new ApplicationError(('Please verify your email first'), 403);
+        throw new badRequestError(('Please verify your email first'), 403);
     }
 
     if (employee.position !== "MANAGER") {
         throw new badRequestError(('You are not Allowed to Login into the System'), 400);
     }
-    
+
     const result = comparePassword(password, employee.password);
 
     if (!result) throw new badRequestError(('Incorrect credentials'), 400);
@@ -99,7 +99,7 @@ export const login = async (req,res,next)=>{
     }
 }
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
     try {
       
       res.clearCookie('Login_Token', { path: '/' });
@@ -107,8 +107,7 @@ export const logout = async (req, res) => {
       res.status(200).json({ status: 200, message: ('Logout successful!') });
 
     } catch (error) {
-
-        res.status(400).json(error.message);
+        next(error)
     }
 };
 
