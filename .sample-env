@@ -1,0 +1,26 @@
+#development connection string from your dev DataBase
+Dev_DB_URL=""
+
+#Test connection string from your Test DataBase
+Test_DB_URL=""
+
+#Production connection string from your prodcution DataBase
+Prod_DB_URL=""
+
+#PORT the App is Listens on (default is 5000)
+PORT=""
+
+#SENDGRID_API_KEY to be able to send email using SendGrid API
+SENDGRID_API_KEY=""
+
+#SENDGRID_SENDER_EMAIL a sendGrid verified email to use while sending emails
+SENDGRID_SENDER_EMAIL=""
+
+#BACKEND_URL the url on which your back in usinng
+BACKEND_URL=""
+
+#JWT Secret Key
+TOKEN_SECRET=""
+
+#SALT Value For bcrypt to use
+SALT_ROUNDS=""

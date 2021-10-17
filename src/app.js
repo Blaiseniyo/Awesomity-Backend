@@ -5,6 +5,9 @@ import routes from "./routes/index";
 import ApplicationError from "./utls/Errors/applicationError"
 import "dotenv/config";
 import cookieParser from "cookie-parser";
+import swaggerUI from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerConfigs from './config/swaggerDoc';
 
 
 const app = express();
@@ -15,12 +18,18 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 
+
 //routes
 app.use("/api/v1/",routes);
 
+// documentation route
+const swaggerDocs = swaggerJsDoc(swaggerConfigs);
+
+app.use('/api_docs', swaggerUI.serve,swaggerUI.setup(swaggerDocs));
+
 // welcome page
 app.use("/",(req,res)=>{
-    res.status(200).json({message:"Welcome to Awesomity Challange By Blaise Niyonkuru"})
+  res.status(200).json({message:"Welcome to Awesomity Challange By Blaise Niyonkuru"})
 })
 
 // catch all 404 errors
@@ -29,16 +38,16 @@ app.all('*', (req, res, next) => {
     next(err);
   });
 
-  // Throw an error if anything wrong happens
-  app.use((err, req, res, next) => {
-    const statusCode = err.status || 500;
-    res.status(statusCode).json({ status: statusCode, error: err.message});
-    // next(err);
-  });
+// Throw an error if anything wrong happens
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({ status: statusCode, error: err.message});
+  // next(err);
+});
 
-  //connecting to the DB
-  db.sequelize.authenticate()
-  .then(()=> console.log("Database connected..."))
-  .catch((err)=> console.log(`Connection to database failed: ${err}}`))
+//connecting to the DB
+db.sequelize.authenticate()
+.then(()=> console.log("Database connected..."))
+.catch((err)=> console.log(`Connection to database failed: ${err}}`))
 
-  app.listen(PORT,()=> console.log(`Server is listenning on port ${PORT}`))
+app.listen(PORT,()=> console.log(`Server is listenning on port ${PORT}`))

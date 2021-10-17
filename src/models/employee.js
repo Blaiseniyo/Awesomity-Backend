@@ -15,9 +15,9 @@ module.exports = (sequelize, DataTypes) => {
   };
   Employee.init({
     code:{
-      type:DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
-      autoIncrement:true,
       allowNull:false
     },
     name: DataTypes.STRING,

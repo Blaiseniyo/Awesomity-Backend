@@ -53,34 +53,3 @@ module.exports = {
     }
   }
 };
-
-// {
-//   "development": {
-//     "use_env_variable": "",
-//     "username": "root",
-//     "password": null,
-//     "database": "database_development",
-//     "host": "127.0.0.1",
-//     "dialect": "postgres",
-//     "operatorsAliases": 0,
-//     "seederStorage": "sequelize",
-//     "seederStorageTableName": "sequelize_data",
-//     "logging": false
-//   },
-//   "test": {
-//     "use_env_variable": "",
-//     "username": "root",
-//     "password": null,
-//     "database": "database_test",
-//     "host": "127.0.0.1",
-//     "dialect": "mysql"
-//   },
-//   "production": {
-//     "use_env_variable": "",
-//     "username": "root",
-//     "password": null,
-//     "database": "database_production",
-//     "host": "127.0.0.1",
-//     "dialect": "mysql"
-//   }
-// }
