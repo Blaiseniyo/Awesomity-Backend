@@ -28,7 +28,7 @@ const swaggerDocs = swaggerJsDoc(swaggerConfigs);
 app.use('/api_docs', swaggerUI.serve,swaggerUI.setup(swaggerDocs));
 
 // welcome page
-app.use("/",(req,res)=>{
+app.get("/",(req,res)=>{
   res.status(200).json({message:"Welcome to Awesomity Challange By Blaise Niyonkuru"})
 })
 
